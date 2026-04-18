@@ -5,6 +5,8 @@ export type MacroSummary = {
   fat: number;
 };
 
+export type MealType = "Breakfast" | "Lunch" | "Dinner" | "Snack";
+
 export type NutrientBreakdown = MacroSummary & {
   fiber: number;
   sodium: number;
@@ -18,13 +20,26 @@ export type GoalProfile = {
   weeklyRateKg: number;
   maintenanceCalories: number;
   recommendedCalories: number;
+  proteinTarget: number;
+  carbsTarget: number;
+  fatTarget: number;
 };
 
 export type FoodEntry = {
   id: string;
   name: string;
   serving: string;
-  meal: "Breakfast" | "Lunch" | "Dinner" | "Snack";
+  meal: MealType;
+  nutrients: NutrientBreakdown;
+};
+
+export type FoodCatalogItem = {
+  id: string;
+  name: string;
+  brand?: string;
+  serving: string;
+  baseAmount: number;
+  baseUnit: string;
   nutrients: NutrientBreakdown;
 };
 

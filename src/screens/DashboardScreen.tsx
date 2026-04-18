@@ -4,11 +4,12 @@ import { Screen } from "../components/Screen";
 import { SectionCard } from "../components/SectionCard";
 import { MetricPill } from "../components/MetricPill";
 import { ProgressBar } from "../components/ProgressBar";
-import { goalProfile, todayFoods, weeklyPlan } from "../data/mockData";
-import { macroProgress, sumMacros } from "../utils/nutrition";
+import { weeklyPlan } from "../data/mockData";
+import { useAppState } from "../context/AppState";
+import { macroProgress } from "../utils/nutrition";
 
 export function DashboardScreen() {
-  const totals = sumMacros(todayFoods);
+  const { goalProfile, totals, foodEntries } = useAppState();
 
   return (
     <Screen>
@@ -35,6 +36,7 @@ export function DashboardScreen() {
       </SectionCard>
 
       <SectionCard eyebrow="Nutrition" title="Macro progress">
+        <Text style={styles.supportText}>{foodEntries.length} food entries logged today.</Text>
         <View style={styles.macroGroup}>
           <Text style={styles.macroLabel}>Calories {totals.calories} / {goalProfile.recommendedCalories}</Text>
           <ProgressBar progress={macroProgress(totals.calories, goalProfile.recommendedCalories)} />

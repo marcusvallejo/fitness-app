@@ -34,9 +34,9 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 
 ## Suggested next build steps
 
-1. Add local state and persistence with Zustand + AsyncStorage or Supabase sync.
-2. Connect nutrition search to a real food API.
-3. Add onboarding for height, weight, age, sex, activity, goal, and gym access.
-4. Implement a calorie target calculator using TDEE and desired weekly rate of change.
-5. Add camera capture and AI meal analysis confirmation flow.
-6. Store workout history and progress photos.
+1. Replace the starter food catalog with a real nutrition API such as USDA FoodData Central or Open Food Facts.
+2. Add onboarding for height, weight, age, sex, activity, goal, and gym access.
+3. Implement a calorie target calculator using TDEE and desired weekly rate of change.
+4. Add camera capture and AI meal analysis confirmation flow.
+5. Store workout history and progress photos.
+6. Add cloud sync and auth once the single-user flow feels right.
