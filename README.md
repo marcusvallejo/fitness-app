@@ -35,8 +35,8 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 ## Suggested next build steps
 
 1. Replace the starter food catalog with a real nutrition API such as USDA FoodData Central or Open Food Facts.
-2. Add onboarding for height, weight, age, sex, activity, goal, and gym access.
-3. Implement a calorie target calculator using TDEE and desired weekly rate of change.
+2. Expand onboarding with gym access, training age, and dietary preferences.
+3. Add workout history tracking so planned lifts can become completed sessions.
 4. Add camera capture and AI meal analysis confirmation flow.
-5. Store workout history and progress photos.
-6. Add cloud sync and auth once the single-user flow feels right.
+5. Add cloud sync and auth once the single-user flow feels right.
+6. Make workout planning flexible so users can train on any number of days instead of a fixed template.

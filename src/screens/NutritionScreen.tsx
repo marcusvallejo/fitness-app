@@ -121,12 +121,12 @@ export function NutritionScreen() {
           <Text style={styles.summaryTitle}>Daily totals</Text>
           <Text style={styles.macros}>Calories {totals.calories} / {goalProfile.recommendedCalories}</Text>
           <ProgressBar progress={macroProgress(totals.calories, goalProfile.recommendedCalories)} />
-          <Text style={styles.macros}>Protein {totals.protein}g / 190g</Text>
-          <ProgressBar progress={macroProgress(totals.protein, 190)} color="#2a9d8f" />
-          <Text style={styles.macros}>Carbs {totals.carbs}g / 240g</Text>
-          <ProgressBar progress={macroProgress(totals.carbs, 240)} color="#f4a261" />
-          <Text style={styles.macros}>Fats {totals.fat}g / 70g</Text>
-          <ProgressBar progress={macroProgress(totals.fat, 70)} color="#264653" />
+          <Text style={styles.macros}>Protein {totals.protein}g / {goalProfile.proteinTarget}g</Text>
+          <ProgressBar progress={macroProgress(totals.protein, goalProfile.proteinTarget)} color="#2a9d8f" />
+          <Text style={styles.macros}>Carbs {totals.carbs}g / {goalProfile.carbsTarget}g</Text>
+          <ProgressBar progress={macroProgress(totals.carbs, goalProfile.carbsTarget)} color="#f4a261" />
+          <Text style={styles.macros}>Fats {totals.fat}g / {goalProfile.fatTarget}g</Text>
+          <ProgressBar progress={macroProgress(totals.fat, goalProfile.fatTarget)} color="#264653" />
         </View>
         {!hydrated ? <Text style={styles.helper}>Loading saved meals...</Text> : null}
         {foodEntries.map((entry) => (

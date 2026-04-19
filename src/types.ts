@@ -7,6 +7,10 @@ export type MacroSummary = {
 
 export type MealType = "Breakfast" | "Lunch" | "Dinner" | "Snack";
 
+export type Sex = "male" | "female";
+
+export type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | "very-active";
+
 export type NutrientBreakdown = MacroSummary & {
   fiber: number;
   sodium: number;
@@ -23,6 +27,17 @@ export type GoalProfile = {
   proteinTarget: number;
   carbsTarget: number;
   fatTarget: number;
+};
+
+export type UserProfile = {
+  age: number;
+  sex: Sex;
+  heightCm: number;
+  weightKg: number;
+  targetWeightKg: number;
+  activityLevel: ActivityLevel;
+  goal: "cut" | "maintain" | "bulk";
+  weeklyRateKg: number;
 };
 
 export type FoodEntry = {
@@ -44,15 +59,19 @@ export type FoodCatalogItem = {
 };
 
 export type WorkoutDay = {
+  id: string;
   day: string;
   focus: string;
   durationMin: number;
-  exercises: {
-    name: string;
-    sets: number;
-    reps: string;
-    load: string;
-  }[];
+  exercises: WorkoutExercise[];
+};
+
+export type WorkoutExercise = {
+  id: string;
+  name: string;
+  sets: number;
+  reps: string;
+  load: string;
 };
 
 export type ProgressMetric = {

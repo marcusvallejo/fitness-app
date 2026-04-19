@@ -1,4 +1,4 @@
-import { FoodCatalogItem, FoodEntry, GoalProfile, ProgressMetric, WorkoutDay } from "../types";
+import { FoodCatalogItem, FoodEntry, GoalProfile, ProgressMetric, UserProfile, WorkoutDay } from "../types";
 
 export const goalProfile: GoalProfile = {
   currentWeightKg: 82,
@@ -10,6 +10,17 @@ export const goalProfile: GoalProfile = {
   proteinTarget: 190,
   carbsTarget: 240,
   fatTarget: 70,
+};
+
+export const defaultUserProfile: UserProfile = {
+  age: 27,
+  sex: "male",
+  heightCm: 180,
+  weightKg: 82,
+  targetWeightKg: 78,
+  activityLevel: "moderate",
+  goal: "cut",
+  weeklyRateKg: 0.4,
 };
 
 export const todayFoods: FoodEntry[] = [
@@ -196,43 +207,47 @@ export const foodCatalog: FoodCatalogItem[] = [
 
 export const weeklyPlan: WorkoutDay[] = [
   {
+    id: "monday",
     day: "Monday",
     focus: "Upper Strength",
     durationMin: 75,
     exercises: [
-      { name: "Barbell Bench Press", sets: 4, reps: "5", load: "80kg" },
-      { name: "Weighted Pull-Up", sets: 4, reps: "6", load: "+10kg" },
-      { name: "Overhead Press", sets: 3, reps: "6-8", load: "42.5kg" },
+      { id: "mon-1", name: "Barbell Bench Press", sets: 4, reps: "5", load: "80kg" },
+      { id: "mon-2", name: "Weighted Pull-Up", sets: 4, reps: "6", load: "+10kg" },
+      { id: "mon-3", name: "Overhead Press", sets: 3, reps: "6-8", load: "42.5kg" },
     ],
   },
   {
+    id: "tuesday",
     day: "Tuesday",
     focus: "Lower Strength",
     durationMin: 80,
     exercises: [
-      { name: "Back Squat", sets: 4, reps: "5", load: "110kg" },
-      { name: "Romanian Deadlift", sets: 3, reps: "8", load: "95kg" },
-      { name: "Walking Lunge", sets: 3, reps: "12/leg", load: "20kg DBs" },
+      { id: "tue-1", name: "Back Squat", sets: 4, reps: "5", load: "110kg" },
+      { id: "tue-2", name: "Romanian Deadlift", sets: 3, reps: "8", load: "95kg" },
+      { id: "tue-3", name: "Walking Lunge", sets: 3, reps: "12/leg", load: "20kg DBs" },
     ],
   },
   {
+    id: "thursday",
     day: "Thursday",
     focus: "Push Hypertrophy",
     durationMin: 65,
     exercises: [
-      { name: "Incline Dumbbell Press", sets: 4, reps: "10-12", load: "30kg DBs" },
-      { name: "Cable Fly", sets: 3, reps: "12-15", load: "Moderate" },
-      { name: "Triceps Pressdown", sets: 3, reps: "12-15", load: "Moderate" },
+      { id: "thu-1", name: "Incline Dumbbell Press", sets: 4, reps: "10-12", load: "30kg DBs" },
+      { id: "thu-2", name: "Cable Fly", sets: 3, reps: "12-15", load: "Moderate" },
+      { id: "thu-3", name: "Triceps Pressdown", sets: 3, reps: "12-15", load: "Moderate" },
     ],
   },
   {
+    id: "saturday",
     day: "Saturday",
     focus: "Pull + Conditioning",
     durationMin: 70,
     exercises: [
-      { name: "Lat Pulldown", sets: 4, reps: "10", load: "65kg" },
-      { name: "Chest-Supported Row", sets: 4, reps: "8-10", load: "40kg DBs" },
-      { name: "Assault Bike Intervals", sets: 8, reps: "20s hard / 100s easy", load: "Bodyweight" },
+      { id: "sat-1", name: "Lat Pulldown", sets: 4, reps: "10", load: "65kg" },
+      { id: "sat-2", name: "Chest-Supported Row", sets: 4, reps: "8-10", load: "40kg DBs" },
+      { id: "sat-3", name: "Assault Bike Intervals", sets: 8, reps: "20s hard / 100s easy", load: "Bodyweight" },
     ],
   },
 ];
