@@ -20,9 +20,9 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 2. Nutrition
    Logs foods, supports future catalog search, and defines the AI camera scan flow.
 3. Workout
-   Handles weekly planning and adaptive workout generation.
+   Handles weekly planning, exercise editing, and workout completion logging for the current day.
 4. Progress
-   Displays streaks, body metrics, and roadmap items for the next phase.
+   Displays streaks, saved weigh-ins, completed workout history, and body-weight check-ins.
 
 ## Recommended backend and AI architecture
 
@@ -36,7 +36,7 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 
 1. Replace the starter food catalog with a real nutrition API such as USDA FoodData Central or Open Food Facts.
 2. Expand onboarding with gym access, training age, and dietary preferences.
-3. Add workout history tracking so planned lifts can become completed sessions.
-4. Add camera capture and AI meal analysis confirmation flow.
-5. Add cloud sync and auth once the single-user flow feels right.
-6. Make workout planning flexible so users can train on any number of days instead of a fixed template.
+3. Add camera capture and AI meal analysis confirmation flow.
+4. Add cloud sync and auth once the single-user flow feels right.
+5. Make workout planning flexible so users can train on any number of days instead of a fixed template.
+6. Add off-plan workout logging so users can record sessions even when the day is not pre-scheduled.
