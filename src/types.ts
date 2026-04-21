@@ -79,3 +79,20 @@ export type ProgressMetric = {
   value: string;
   change: string;
 };
+
+export type WeighIn = {
+  id: string;
+  date: string;
+  weightKg: number;
+}
+
+export type WorkoutCompletion = {
+  id: string;
+  workoutDayId: string;
+  dayLabel: string;
+  focus: string;
+  completedAt: string;
+  durationMin: number;
+  exerciseCount: number;
+}
+

@@ -6,7 +6,8 @@ import { SectionCard } from "../components/SectionCard";
 import { useAppState } from "../context/AppState";
 
 export function WorkoutScreen() {
-  const { workoutPlan, todaysWorkout, updateWorkoutDay, addWorkoutExercise, removeWorkoutExercise } = useAppState();
+  const { workoutPlan, todaysWorkout, workoutCompletions, updateWorkoutDay, addWorkoutExercise, removeWorkoutExercise, completeWorkout } =
+    useAppState();
   const initialDay = workoutPlan[0];
   const [selectedDayId, setSelectedDayId] = useState(initialDay?.id ?? "");
   const [focusDraft, setFocusDraft] = useState(initialDay?.focus ?? "");
@@ -21,6 +22,15 @@ export function WorkoutScreen() {
   const selectedDay = useMemo(
     () => workoutPlan.find((day) => day.id === selectedDayId) ?? workoutPlan[0],
     [selectedDayId, workoutPlan]
+  );
+  const completedToday = useMemo(
+    () =>
+      todaysWorkout
+        ? workoutCompletions.some(
+            (entry) => entry.workoutDayId === todaysWorkout.id && entry.completedAt.slice(0, 10) === new Date().toLocaleDateString("sv-SE")
+          )
+        : false,
+    [todaysWorkout, workoutCompletions]
   );
 
   function syncDayDrafts(dayId: string) {
@@ -84,9 +94,15 @@ export function WorkoutScreen() {
             <Text style={styles.duration}>{todaysWorkout.durationMin} min planned</Text>
             {todaysWorkout.exercises.map((exercise) => (
               <Text key={exercise.id} style={styles.exercise}>
-                {exercise.name} · {exercise.sets} x {exercise.reps} · {exercise.load}
+                {exercise.name} - {exercise.sets} x {exercise.reps} - {exercise.load}
               </Text>
             ))}
+            <Pressable
+              onPress={() => completeWorkout(todaysWorkout.id)}
+              style={[styles.saveButton, completedToday && styles.completeButtonDone]}
+            >
+              <Text style={styles.saveButtonText}>{completedToday ? "Logged for today" : "Mark workout complete"}</Text>
+            </Pressable>
           </View>
         ) : (
           <Text style={styles.copy}>No workout is scheduled for today yet. Use the planner below to build one.</Text>
@@ -172,7 +188,7 @@ export function WorkoutScreen() {
                 <View style={styles.exerciseMeta}>
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <Text style={styles.exercise}>
-                    {exercise.sets} x {exercise.reps} · {exercise.load}
+                    {exercise.sets} x {exercise.reps} - {exercise.load}
                   </Text>
                 </View>
                 <Pressable onPress={() => removeWorkoutExercise(selectedDay.id, exercise.id)} style={styles.deleteButton}>
@@ -186,7 +202,7 @@ export function WorkoutScreen() {
 
       <SectionCard eyebrow="Adaptive Coach" title="Generate a workout">
         <Text style={styles.copy}>
-          The workout engine should use goal, experience, available equipment, soreness, and recent volume to produce the day’s plan.
+          The workout engine should use goal, experience, available equipment, soreness, and recent volume to produce the day's plan.
         </Text>
         <View style={styles.promptBox}>
           <Text style={styles.promptTitle}>Example inputs</Text>
@@ -290,6 +306,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButton: {
+    marginTop: 10,
     backgroundColor: "#1f2933",
     paddingHorizontal: 14,
     paddingVertical: 12,
@@ -314,6 +331,9 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: "#fffaf4",
     fontWeight: "800",
+  },
+  completeButtonDone: {
+    backgroundColor: "#2a9d8f",
   },
   exerciseRow: {
     flexDirection: "row",

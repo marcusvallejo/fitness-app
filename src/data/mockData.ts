@@ -1,4 +1,4 @@
-import { FoodCatalogItem, FoodEntry, GoalProfile, ProgressMetric, UserProfile, WorkoutDay } from "../types";
+import { FoodCatalogItem, FoodEntry, GoalProfile, ProgressMetric, UserProfile, WorkoutDay, WeighIn, WorkoutCompletion } from "../types";
 
 export const goalProfile: GoalProfile = {
   currentWeightKg: 82,
@@ -264,4 +264,31 @@ export const productRoadmap = [
   "Camera macro scan using on-device image capture plus a vision model endpoint",
   "Goal engine to recompute maintenance calories and bulking/cutting targets",
   "Adaptive workout generator based on goal, equipment, recovery, and history",
+];
+
+export const initialWeighIns: WeighIn[] = [
+  { id: "weighin-1", date: "2026-04-05", weightKg: 83.2 },
+  { id: "weighin-2", date: "2026-04-12", weightKg: 82.6 },
+  { id: "weighin-3", date: "2026-04-19", weightKg: 82.0 },
+];
+
+export const initialWorkoutCompletions: WorkoutCompletion[] = [
+  {
+    id: "completion-1",
+    workoutDayId: "monday",
+    dayLabel: "Monday",
+    focus: "Upper Strength",
+    completedAt: "2026-04-14T18:00:00.000Z",
+    durationMin: 75,
+    exerciseCount: 3,
+  },
+  {
+    id: "completion-2",
+    workoutDayId: "tuesday",
+    dayLabel: "Tuesday",
+    focus: "Lower Strength",
+    completedAt: "2026-04-16T18:15:00.000Z",
+    durationMin: 80,
+    exerciseCount: 3,
+  },
 ];

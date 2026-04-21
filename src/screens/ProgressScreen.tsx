@@ -1,18 +1,40 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { Screen } from "../components/Screen";
 import { SectionCard } from "../components/SectionCard";
-import { progressMetrics, productRoadmap } from "../data/mockData";
+import { useAppState } from "../context/AppState";
+import { productRoadmap } from "../data/mockData";
 
 export function ProgressScreen() {
+  const { weighIns, workoutCompletions, currentStreak, addWeighIn } = useAppState();
+  const latestWeighIn = weighIns[0];
+  const latestWorkout = workoutCompletions[0];
+  const recentWeighIns = weighIns.slice(0, 3);
+  const recentWorkouts = workoutCompletions.slice(0, 3);
+  const [weightInput, setWeightInput] = useState("");
+
+  const metrics = [
+    {
+      label: "Weigh-ins logged",
+      value: String(weighIns.length),
+      change: latestWeighIn ? latestWeighIn.date : "No entries yet",
+    },
+    {
+      label: "Completed workouts",
+      value: String(workoutCompletions.length),
+      change: latestWorkout ? latestWorkout.dayLabel : "No workouts yet",
+    },
+  ];
+
   return (
     <Screen>
       <SectionCard eyebrow="Momentum" title="Streaks and progress">
         <View style={styles.streakBadge}>
-          <Text style={styles.streakNumber}>16</Text>
+          <Text style={styles.streakNumber}>{currentStreak}</Text>
           <Text style={styles.streakLabel}>day streak</Text>
         </View>
-        {progressMetrics.map((metric) => (
+        {metrics.map((metric) => (
           <View key={metric.label} style={styles.metricRow}>
             <View>
               <Text style={styles.metricLabel}>{metric.label}</Text>
@@ -23,10 +45,66 @@ export function ProgressScreen() {
         ))}
       </SectionCard>
 
+      <SectionCard eyebrow="Check-In" title="Log body weight">
+        <TextInput
+          value={weightInput}
+          onChangeText={setWeightInput}
+          placeholder="e.g. 81.4"
+          placeholderTextColor="#9aa5b1"
+          keyboardType="decimal-pad"
+          style={styles.input}
+        />
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            const value = Number(weightInput);
+            if (!Number.isFinite(value) || value <= 0) {
+              return;
+            }
+
+            addWeighIn(value);
+            setWeightInput("");
+          }}
+        >
+          <Text style={styles.buttonText}>Save weigh-in</Text>
+        </Pressable>
+      </SectionCard>
+
+      <SectionCard eyebrow="Check-ins" title="Recent weigh-ins">
+        {recentWeighIns.length === 0 ? (
+          <Text style={styles.emptyText}>No weigh-ins yet.</Text>
+        ) : (
+          recentWeighIns.map((entry) => (
+            <View key={entry.id} style={styles.metricRow}>
+              <View>
+                <Text style={styles.metricLabel}>{entry.date}</Text>
+                <Text style={styles.metricValue}>{entry.weightKg} kg</Text>
+              </View>
+            </View>
+          ))
+        )}
+      </SectionCard>
+
+      <SectionCard eyebrow="Training Log" title="Recent completed workouts">
+        {recentWorkouts.length === 0 ? (
+          <Text style={styles.emptyText}>No completed workouts yet.</Text>
+        ) : (
+          recentWorkouts.map((entry) => (
+            <View key={entry.id} style={styles.metricRow}>
+              <View>
+                <Text style={styles.metricLabel}>{entry.dayLabel}</Text>
+                <Text style={styles.metricValue}>{entry.focus}</Text>
+              </View>
+              <Text style={styles.metricChange}>{entry.durationMin} min</Text>
+            </View>
+          ))
+        )}
+      </SectionCard>
+
       <SectionCard eyebrow="Launch Path" title="What to build next">
         {productRoadmap.map((item) => (
           <View key={item} style={styles.roadmapItem}>
-            <Text style={styles.dot}>•</Text>
+            <Text style={styles.dot}>-</Text>
             <Text style={styles.roadmapText}>{item}</Text>
           </View>
         ))}
@@ -91,5 +169,29 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "#1f2933",
     lineHeight: 21,
+  },
+  emptyText: {
+    color: "#7b8794",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#eadfd3",
+    backgroundColor: "#fffaf4",
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    color: "#1f2933",
+  },
+  button: {
+    marginTop: 12,
+    backgroundColor: "#e76f51",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fffaf4",
+    fontWeight: "800",
   },
 });
