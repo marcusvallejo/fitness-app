@@ -84,7 +84,7 @@ export type WeighIn = {
   id: string;
   date: string;
   weightKg: number;
-}
+};
 
 export type WorkoutCompletion = {
   id: string;
@@ -94,5 +94,5 @@ export type WorkoutCompletion = {
   completedAt: string;
   durationMin: number;
   exerciseCount: number;
-}
+};
 

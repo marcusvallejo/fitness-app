@@ -5,9 +5,20 @@ import { Screen } from "../components/Screen";
 import { SectionCard } from "../components/SectionCard";
 import { useAppState } from "../context/AppState";
 
+const WEEK_DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
+
 export function WorkoutScreen() {
-  const { workoutPlan, todaysWorkout, workoutCompletions, updateWorkoutDay, addWorkoutExercise, removeWorkoutExercise, completeWorkout } =
-    useAppState();
+  const {
+    workoutPlan,
+    todaysWorkout,
+    workoutCompletions,
+    updateWorkoutDay,
+    addWorkoutExercise,
+    removeWorkoutExercise,
+    addWorkoutDay,
+    removeWorkoutDay,
+    completeWorkout,
+  } = useAppState();
   const initialDay = workoutPlan[0];
   const [selectedDayId, setSelectedDayId] = useState(initialDay?.id ?? "");
   const [focusDraft, setFocusDraft] = useState(initialDay?.focus ?? "");
@@ -31,6 +42,10 @@ export function WorkoutScreen() {
           )
         : false,
     [todaysWorkout, workoutCompletions]
+  );
+  const availableDays = useMemo(
+    () => WEEK_DAY_ORDER.filter((dayLabel) => !workoutPlan.some((day) => day.day === dayLabel)),
+    [workoutPlan]
   );
 
   function syncDayDrafts(dayId: string) {
@@ -84,6 +99,31 @@ export function WorkoutScreen() {
     });
   }
 
+  function handleAddWorkoutDay(dayLabel: string) {
+    const createdDayId = addWorkoutDay(dayLabel);
+    if (createdDayId) {
+      setSelectedDayId(createdDayId);
+      setFocusDraft("Custom Session");
+      setDurationDraft("60");
+    }
+  }
+
+  function handleRemoveWorkoutDay(dayId: string) {
+    const remainingDays = workoutPlan.filter((day) => day.id !== dayId);
+    removeWorkoutDay(dayId);
+
+    if (selectedDayId === dayId) {
+      const nextDay = remainingDays[0];
+      if (nextDay) {
+        syncDayDrafts(nextDay.id);
+      } else {
+        setSelectedDayId("");
+        setFocusDraft("");
+        setDurationDraft("");
+      }
+    }
+  }
+
   return (
     <Screen>
       <SectionCard eyebrow="Today" title="Today's workout">
@@ -111,8 +151,20 @@ export function WorkoutScreen() {
 
       <SectionCard eyebrow="Planner" title="Weekly workout cycle">
         <Text style={styles.copy}>
-          Pick a day, set the focus and session length, then build the exercise list you want to follow. A future update should let you create as many or as few training days as you want.
+          Pick a weekday, set the focus and session length, then build the exercise list you want to follow.
         </Text>
+        <Text style={styles.helperText}>Add missing weekdays:</Text>
+        <View style={styles.daySelector}>
+          {availableDays.length === 0 ? (
+            <Text style={styles.helperText}>All weekdays are already in your plan.</Text>
+          ) : (
+            availableDays.map((dayLabel) => (
+              <Pressable key={dayLabel} onPress={() => handleAddWorkoutDay(dayLabel)} style={styles.addDayButton}>
+                <Text style={styles.addDayButtonText}>{dayLabel}</Text>
+              </Pressable>
+            ))
+          )}
+        </View>
         <View style={styles.daySelector}>
           {workoutPlan.map((day) => (
             <Pressable
@@ -196,6 +248,9 @@ export function WorkoutScreen() {
                 </Pressable>
               </View>
             ))}
+            <Pressable onPress={() => handleRemoveWorkoutDay(selectedDay.id)} style={styles.removeDayButton}>
+              <Text style={styles.removeDayButtonText}>Remove day</Text>
+            </Pressable>
           </View>
         ) : null}
       </SectionCard>
@@ -302,6 +357,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
+  addDayButton: {
+    backgroundColor: "#e76f51",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  addDayButtonText: {
+    color: "#fffaf4",
+    fontWeight: "800",
+  },
+  helperText: {
+    color: "#7b8794",
+  },
   halfInput: {
     flex: 1,
   },
@@ -364,6 +433,20 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "#7b8794",
     fontWeight: "700",
+  },
+  removeDayButton: {
+    marginTop: 6,
+    backgroundColor: "#fffaf4",
+    borderWidth: 1,
+    borderColor: "#f4d8c8",
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  removeDayButtonText: {
+    color: "#b44938",
+    fontWeight: "800",
   },
   exercise: {
     color: "#52606d",

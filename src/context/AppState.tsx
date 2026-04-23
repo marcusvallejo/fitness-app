@@ -12,6 +12,8 @@ type AddFoodInput = {
   meal: MealType;
 };
 
+const WEEK_DAY_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
+
 type AppStateValue = {
   goalProfile: GoalProfile;
   userProfile: UserProfile;
@@ -29,6 +31,8 @@ type AppStateValue = {
   updateWorkoutDay: (dayId: string, updates: Pick<WorkoutDay, "focus" | "durationMin">) => void;
   addWorkoutExercise: (dayId: string, exercise: Omit<WorkoutExercise, "id">) => void;
   removeWorkoutExercise: (dayId: string, exerciseId: string) => void;
+  addWorkoutDay: (dayLabel: string) => string | undefined;
+  removeWorkoutDay: (dayId: string) => void;
   updateUserProfile: (profile: UserProfile) => void;
   addWeighIn: (weightKg: number, date?: string) => void;
   completeWorkout: (dayId: string) => void;
@@ -67,7 +71,7 @@ export function AppStateProvider({ children }: PropsWithChildren) {
         }
 
         if (savedWorkoutPlan) {
-          setWorkoutPlan(JSON.parse(savedWorkoutPlan) as WorkoutDay[]);
+          setWorkoutPlan(sortWorkoutPlan(JSON.parse(savedWorkoutPlan) as WorkoutDay[]));
         }
 
         if (savedUserProfile) {
@@ -151,35 +155,71 @@ export function AppStateProvider({ children }: PropsWithChildren) {
       },
       updateWorkoutDay: (dayId, updates) => {
         setWorkoutPlan((current) =>
-          current.map((day) => (day.id === dayId ? { ...day, ...updates } : day))
+          sortWorkoutPlan(current.map((day) => (day.id === dayId ? { ...day, ...updates } : day)))
         );
       },
       addWorkoutExercise: (dayId, exercise) => {
         setWorkoutPlan((current) =>
-          current.map((day) =>
-            day.id === dayId
-              ? {
-                  ...day,
-                  exercises: [
-                    ...day.exercises,
-                    {
-                      ...exercise,
-                      id: `${dayId}-${Date.now()}-${Math.round(Math.random() * 1000)}`,
-                    },
-                  ],
-                }
-              : day
+          sortWorkoutPlan(
+            current.map((day) =>
+              day.id === dayId
+                ? {
+                    ...day,
+                    exercises: [
+                      ...day.exercises,
+                      {
+                        ...exercise,
+                        id: `${dayId}-${Date.now()}-${Math.round(Math.random() * 1000)}`,
+                      },
+                    ],
+                  }
+                : day
+            )
           )
         );
       },
       removeWorkoutExercise: (dayId, exerciseId) => {
         setWorkoutPlan((current) =>
-          current.map((day) =>
-            day.id === dayId
-              ? { ...day, exercises: day.exercises.filter((exercise) => exercise.id !== exerciseId) }
-              : day
+          sortWorkoutPlan(
+            current.map((day) =>
+              day.id === dayId
+                ? { ...day, exercises: day.exercises.filter((exercise) => exercise.id !== exerciseId) }
+                : day
+            )
           )
         );
+      },
+      addWorkoutDay: (dayLabel) => {
+        const normalizedDay = normalizeWeekDay(dayLabel);
+        if (!normalizedDay) {
+          return undefined;
+        }
+
+        let createdDayId: string | undefined;
+        setWorkoutPlan((current) => {
+          const existingDay = current.find((day) => day.day === normalizedDay);
+          if (existingDay) {
+            createdDayId = existingDay.id;
+            return current;
+          }
+
+          const dayId = `${normalizedDay.toLowerCase()}-${Date.now()}`;
+          createdDayId = dayId;
+          return sortWorkoutPlan([
+            ...current,
+            {
+              id: dayId,
+              day: normalizedDay,
+              focus: "Custom Session",
+              durationMin: 60,
+              exercises: [],
+            },
+          ]);
+        });
+        return createdDayId;
+      },
+      removeWorkoutDay: (dayId) => {
+        setWorkoutPlan((current) => sortWorkoutPlan(current.filter((day) => day.id !== dayId)));
       },
       updateUserProfile: (profile) => {
         setUserProfile(profile);
@@ -232,7 +272,7 @@ export function useAppState() {
 }
 
 function getTodaysWorkout(workoutPlan: WorkoutDay[]) {
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
   const today = dayNames[new Date().getDay()];
   return workoutPlan.find((day) => day.day === today);
 }
@@ -260,4 +300,19 @@ function getWorkoutStreak(workoutCompletions: WorkoutCompletion[]) {
 
 function getLocalDateKey(date = new Date()) {
   return date.toLocaleDateString("sv-SE");
+}
+
+function normalizeWeekDay(dayLabel: string) {
+  const trimmedDay = dayLabel.trim().toLowerCase();
+  return WEEK_DAY_ORDER.find((day) => day.toLowerCase() === trimmedDay);
+}
+
+function sortWorkoutPlan(workoutPlan: WorkoutDay[]) {
+  return [...workoutPlan].sort((left, right) => {
+    const leftIndex = WEEK_DAY_ORDER.indexOf(left.day as (typeof WEEK_DAY_ORDER)[number]);
+    const rightIndex = WEEK_DAY_ORDER.indexOf(right.day as (typeof WEEK_DAY_ORDER)[number]);
+    const safeLeftIndex = leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex;
+    const safeRightIndex = rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex;
+    return safeLeftIndex - safeRightIndex;
+  });
 }
