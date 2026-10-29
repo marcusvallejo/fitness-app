@@ -9,10 +9,6 @@ An Expo + React Native foundation for a fitness app focused on:
 - goal-aware calorie adjustment for cutting, maintenance, and bulking
 - streaks and progress tracking
 
-## Why this stack
-
-Expo gives you a fast iPhone-first path while keeping Android support open for a later public launch. React Native also lets us share almost all app logic across both platforms.
-
 ## MVP feature map
 
 1. Dashboard
@@ -24,7 +20,7 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 4. Progress
    Displays streaks, saved weigh-ins, completed workout history, and body-weight check-ins.
 
-## Recommended backend and AI architecture
+## Backend and AI architecture
 
 - Auth + user data: Supabase or Firebase
 - Food catalog: USDA FoodData Central plus Open Food Facts for breadth
@@ -32,7 +28,7 @@ Expo gives you a fast iPhone-first path while keeping Android support open for a
 - AI meal scan: camera capture in app, then send image to a vision model for food recognition and portion estimation
 - Workout generation: rules engine first, then optional AI suggestions layered on top
 
-## Suggested next build steps
+## Next build steps
 
 1. Replace the starter food catalog with a real nutrition API such as USDA FoodData Central or Open Food Facts.
 2. Expand onboarding with gym access, training age, and dietary preferences.
